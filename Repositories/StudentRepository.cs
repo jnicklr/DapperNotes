@@ -6,61 +6,49 @@ using System.Threading.Tasks;
 using DapperNotes.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using DapperNotes.DataAccess;
 
 namespace DapperNotes.Repositories
 {
-    public class StudentRepository
+    public class StudentRepository : IRepository<Student>
     {
-        private string _connectionString;
+        private readonly string _connectionString;
+        private readonly SqlDataAccess _dataAccess;
 
         public StudentRepository(string connectionString)
         {
             _connectionString = connectionString;
+            _dataAccess = new SqlDataAccess();
         }
 
         public int Add(Student student)
         {
-            string query = @"INSERT INTO [Student] VALUES(@Name, @CPF, @BirthDate)";
-            using(SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                return connection.Execute(query, new { student.Name, student.CPF, student.BirthDate });
-            }
+            string query = "[spAddStudent]";
+            return _dataAccess.SaveData(query, new { student.Name, student.CPF, student.BirthDate }, _connectionString);
         }
 
         public int Update(Student student, int id)
         {
-            string query = @"UPDATE [Student] SET [Name] = @Name, [CPF] = @CPF, [BirthDate] = @BirthDate WHERE [Id] = @Id";
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                return connection.Execute(query, new { Name=student.Name, CPF=student.CPF, BirthDate=student.BirthDate, Id = id });
-            }
+            string query = "[spUpdateStudent]";
+            return _dataAccess.SaveData(query, new { Name = student.Name, CPF = student.CPF, BirthDate = student.BirthDate, Id = id }, _connectionString);
         }
 
         public int Delete(int id)
         {
-            string query = @"DELETE FROM [Student] WHERE [Id] = @Id";
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                return connection.Execute(query, new { Id=id });
-            }
+            string query = "[spDeleteStudent]";
+            return _dataAccess.SaveData(query, new { Id = id }, _connectionString);
         }
 
         public IEnumerable<Student> Get()
         {
-            string query = @"SELECT [Id], [Name], [CPF], [BirthDate] FROM [Student]";
-            using(SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                return connection.Query<Student>(query);
-            }
-        }
+            string query = "SELECT * FROM [vwGetStudents]";
+            return _dataAccess.GetData<Student, dynamic>(query, new{}, _connectionString);
+        } 
 
         public IEnumerable<Student> GetById(int id)
         {
-            string query = @"SELECT [Id], [Name], [CPF], [BirthDate] FROM [Student] WHERE [Id] = @Id";
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                return connection.Query<Student>(query, new { Id = id });
-            }
+            string query = "SELECT * FROM [vwGetStudents] WHERE [Id] = @Id";
+            return _dataAccess.GetData<Student, dynamic>(query, new { Id = id }, _connectionString);
         }
     }
 }
