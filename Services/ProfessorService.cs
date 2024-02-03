@@ -11,6 +11,7 @@ namespace DapperNotes.Services
     public class ProfessorService
     {
         private ProfessorRepository _professorRepository;
+
         public ProfessorService(ProfessorRepository professorRepository) 
         {
             _professorRepository = professorRepository;

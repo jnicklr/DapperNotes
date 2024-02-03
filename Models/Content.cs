@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace DapperNotes.Models
 {
-    internal class Content
+    public class Content
     {
+        public int Id { get; set; }
+        public int Semester { get; set; }
     }
 }
