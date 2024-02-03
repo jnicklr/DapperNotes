@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace DapperNotes.Models
 {
-    internal class Enrollment
+    public class Enrollment
     {
+        public int Id { get; set; }
+        public DateTime EnrollmentDate { get; set; }
+        public decimal EnrollmentValue { get; set; }
+        public int StudentClass { get; set; }
+        public Student Student { get; set; }
+        public Course Course { get; set; }
     }
 }
