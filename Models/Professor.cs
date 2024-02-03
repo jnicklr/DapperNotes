@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace DapperNotes.Models
 {
-    internal class Professor
+    public class Professor
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal ValuePerHour { get; set; }
+        public string AcademicDegree { get; set; }
     }
 }
