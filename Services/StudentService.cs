@@ -27,9 +27,9 @@ namespace DapperNotes.Services
             return _studentRepository.Update(student, id);
         }
 
-        public int DeleteStudent(Student student, int id)
+        public int DeleteStudent(int id)
         {
-            return _studentRepository.Delete(student, id);
+            return _studentRepository.Delete(id);
         }
 
         public IEnumerable<Student> GetAllStudents()

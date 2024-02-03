@@ -57,7 +57,7 @@ namespace DapperNotes.Repositories
 
         public IEnumerable<Professor> Get()
         {
-            string query = @"SELECT [Name], [ValuerPerHour], [AcademicDegree] FROM [Professor]";
+            string query = @"SELECT [Id], [Name], [ValuerPerHour], [AcademicDegree] FROM [Professor]";
             using(SqlConnection connection = new SqlConnection())
             {
                 return connection.Query<Professor>(query);
@@ -66,7 +66,7 @@ namespace DapperNotes.Repositories
 
         public IEnumerable<Professor> GetById(int id)
         {
-            string query = @"SELECT [Name], [ValuerPerHour], [AcademicDegree] FROM [Professor] WHERE [Id]=@Id";
+            string query = @"SELECT [Id], [Name], [ValuerPerHour], [AcademicDegree] FROM [Professor] WHERE [Id]=@Id";
             using (SqlConnection connection = new SqlConnection())
             {
                 return connection.Query<Professor>(query, new { Id=id });

@@ -31,7 +31,7 @@ namespace DapperNotes.Services
             return _professorRepository.Delete(id);
         }
 
-        public IEnumerable<Professor> GetProfessors()
+        public IEnumerable<Professor> GetAllProfessors()
         {
             return _professorRepository.Get();
         }
