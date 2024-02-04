@@ -57,7 +57,7 @@ CREATE TABLE [CourseContent](
 CREATE TABLE [Course](
     [Id] INT NOT NULL IDENTITY(1, 1),
     [Name] NVARCHAR(255) NOT NULL,
-    [MonthlyPrice] NVARCHAR(11) NOT NULL,
+    [MonthlyPrice] DECIMAL(10, 2) NOT NULL,
     [CourseTime] INT NOT NULL,
 
     CONSTRAINT [PK_Course] PRIMARY KEY([Id]),  

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DapperNotes.DataAccess;
 using DapperNotes.Models;
 using Microsoft.Data.SqlClient;
 using System;
@@ -9,70 +10,55 @@ using System.Threading.Tasks;
 
 namespace DapperNotes.Repositories
 {
-    public class CourseRepository
+    public class CourseRepository : IRepository<Course>
     {
-        private string _connectionString;
+        private readonly string _connectionString;
+        private readonly SqlDataAccess _dataAccess;
         public CourseRepository(string connectionString)
         {
             _connectionString = connectionString;
+            _dataAccess = new SqlDataAccess();
         }
 
         public int Add(Course course)
         {
-            string query = @"INSERT INTO [Course] VALUES(@Name, @MonthlyPrice, @CourseTime)";
-            using (SqlConnection connection = new SqlConnection())
+            string query = "spAddCourse";
+            return _dataAccess.SaveData(query, new
             {
-                return connection.Execute(query,
-                    new
-                    {
-                        Name = course.Name,
-                        MonthlyPrice = course.MonthlyPrice,
-                        CourseTime = course.CourseTime
-                    });
-            }
+                Name = course.Name,
+                MonthlyPrice = course.MonthlyPrice,
+                CourseTime = course.CourseTime
+            }, _connectionString);
         }
 
         public int Update(Course course, int id)
         {
-            string query = @"UPDATE [Course] SET [Name]=@Name, [MonthlyPrice]=@MonthlyPrice, [CourseTime]=@CourseTime WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
+            string query = "spUpdateCourse";
+            return _dataAccess.SaveData(query, new
             {
-                return connection.Execute(query,
-                    new
-                    {
-                        Name = course.Name,
-                        MonthlyPrice = course.MonthlyPrice,
-                        CourseTime = course.CourseTime,
-                        Id = id
-                    });
-            }
+                Name = course.Name,
+                MonthlyPrice = course.MonthlyPrice,
+                CourseTime = course.CourseTime,
+                Id = id
+            }, _connectionString);
         }
 
         public int Delete(int id)
         {
-            string query = @"DELETE FROM [Course] WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Execute(query, new { Id = id });
-            }
+            string query = "spDeleteCourse";
+            return _dataAccess.SaveData(query, new { Id = id }, _connectionString);
         }
 
         public IEnumerable<Course> Get()
         {
-            string query = @"SELECT [Id], [Name], [MonthlyPrice], [CourseTime] FROM [Course]";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Query<Course>(query);
-            }
+            string query = "SELECT * FROM [vwGetCourses]";
+            return _dataAccess.GetData<Course, dynamic>(query, new {}, _connectionString);
         }
 
         public IEnumerable<Course> GetById(int id)
         {
-            string query = @"SELECT [Id], [Name], [MonthlyPrice], [CourseTime]  FROM [Course] WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Query<Course>(query, new { Id = id });
-            }
+            string query = "SELECT * FROM [vwGetCourses] WHERE [Id]=@Id";
+            return _dataAccess.GetData<Course, dynamic>(query, new { Id = id }, _connectionString);
         }
     }
 }
