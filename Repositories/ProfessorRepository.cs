@@ -6,71 +6,59 @@ using System.Text;
 using System.Threading.Tasks;
 using DapperNotes.Models;
 using Dapper;
+using DapperNotes.DataAccess;
 
 namespace DapperNotes.Repositories
 {
-    public class ProfessorRepository
+    public class ProfessorRepository : IRepository<Professor>
     {
-        private string _connectionString;
+        private readonly string _connectionString;
+        private readonly SqlDataAccess _dataAccess;
         public ProfessorRepository(string connectionString) 
         {
             _connectionString = connectionString;
+            _dataAccess = new SqlDataAccess();
         }
 
         public int Add(Professor professor)
         {
-            string query = @"INSERT INTO [Professor] VALUES(@Name, @ValuePerHour, @AcademicDegree)";
-            using(SqlConnection connection = new SqlConnection())
+            string query = "[spAddProfessor]";
+            return _dataAccess.SaveData(query, new
             {
-                return connection.Execute(query, 
-                    new { 
-                        Name=professor.Name, 
-                        ValuePerHour=professor.ValuePerHour,
-                        AcademicDegree=professor.AcademicDegree
-                    });
-            } 
+                Name = professor.Name,
+                ValuePerHour = professor.ValuePerHour,
+                AcademicDegree = professor.AcademicDegree
+            }, _connectionString);
         }
 
         public int Update(Professor professor, int id)
         {
-            string query = @"UPDATE [Professor] SET [Name]=@Name, [ValuerPerHour]=@ValuePerHour, [AcademicDegree]=@AcademicDegree WHERE [Id]=@Id";
-            using(SqlConnection connection = new SqlConnection())
+            string query = "[spUpdateProfessor]";
+            return _dataAccess.SaveData(query, new
             {
-                return connection.Execute(query, 
-                    new { 
-                        Name=professor.Name,
-                        ValuePerHour = professor.ValuePerHour,
-                        AcademicDegree = professor.AcademicDegree,
-                        Id=id
-                    });
-            }
+                Name = professor.Name,
+                ValuePerHour = professor.ValuePerHour,
+                AcademicDegree = professor.AcademicDegree,
+                Id = id
+            }, _connectionString);
         }
 
         public int Delete(int id)
         {
-            string query = @"DELETE FROM [Professor] WHERE [Id]=@Id";
-            using(SqlConnection connection = new SqlConnection())
-            {
-                return connection.Execute(query, new { Id=id });
-            }
+            string query = "[spDeleteProfessor]";
+            return _dataAccess.SaveData(query, new { Id = id }, _connectionString);
         }
 
         public IEnumerable<Professor> Get()
         {
-            string query = @"SELECT [Id], [Name], [ValuerPerHour], [AcademicDegree] FROM [Professor]";
-            using(SqlConnection connection = new SqlConnection())
-            {
-                return connection.Query<Professor>(query);
-            }
+            string query = "SELECT * FROM [vwGetProfessors]";
+            return _dataAccess.GetData<Professor, dynamic>(query, new { }, _connectionString);
         }
 
         public IEnumerable<Professor> GetById(int id)
         {
-            string query = @"SELECT [Id], [Name], [ValuerPerHour], [AcademicDegree] FROM [Professor] WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Query<Professor>(query, new { Id=id });
-            }
+            string query = "SELECT * FROM [vwGetProfessors] WHERE [Id] = @Id";
+            return _dataAccess.GetData<Professor, dynamic>(query, new { Id = id }, _connectionString);
         }
     }
 }

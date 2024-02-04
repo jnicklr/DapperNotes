@@ -17,7 +17,7 @@ namespace DapperNotes.Repositories
             _connectionString = connectionString;
         }
 
-        public int Add(Enrollment enrollment, int studentId, int courseId)
+        public int Add(Enrollment enrollment)
         {
             string query = @"INSERT INTO 
                                 [Enrollment] 
@@ -35,13 +35,13 @@ namespace DapperNotes.Repositories
                         EnrollmentDate = enrollment.EnrollmentDate,
                         EnrollmentValue = enrollment.EnrollmentValue,
                         StudentClass = enrollment.StudentClass,
-                        StudentId = studentId,
-                        CourseId = courseId
+                        StudentId = enrollment.Student.Id,
+                        CourseId = enrollment.Course.Id
                     });
             }
         }
 
-        public int Update(Enrollment enrollment, int id, int studentId, int courseId)
+        public int Update(Enrollment enrollment, int id)
         {
             string query = @"UPDATE [Enrollment] 
                             SET 
@@ -59,8 +59,8 @@ namespace DapperNotes.Repositories
                         EnrollmentDate = enrollment.EnrollmentDate,
                         EnrollmentValue = enrollment.EnrollmentValue,
                         StudentClass = enrollment.StudentClass,
-                        StudentId = studentId,
-                        CourseId = courseId,
+                        StudentId = enrollment.Student.Id,
+                        CourseId = enrollment.Course.Id,
                         Id = id
                     });
             }

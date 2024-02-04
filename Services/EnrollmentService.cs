@@ -19,12 +19,12 @@ namespace DapperNotes.Services
 
         public int AddEnrollment(Enrollment enrollment, int studentId, int courseId)
         {
-            return _enrollmentRepository.Add(enrollment, studentId, courseId);
+            return _enrollmentRepository.Add(enrollment);
         }
 
         public int UpdateEnrollment(Enrollment enrollment, int id, int studentId, int courseId)
         {
-            return _enrollmentRepository.Update(enrollment, id, studentId, courseId);
+            return _enrollmentRepository.Update(enrollment, id);
         }
 
         public int DeleteEnrollment(int id)

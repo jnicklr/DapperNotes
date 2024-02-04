@@ -23,7 +23,7 @@ namespace DapperNotes.Repositories
 
         public int Add(Student student)
         {
-            string query = "[spAddStudent]";
+            string query = "spAddStudent";
             return _dataAccess.SaveData(query, new { student.Name, student.CPF, student.BirthDate }, _connectionString);
         }
 

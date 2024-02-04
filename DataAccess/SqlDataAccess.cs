@@ -12,14 +12,14 @@ namespace DapperNotes.DataAccess
     {
         public IEnumerable<T> GetData<T, P>(string procedureName, P parameters, string connectionString)
         {
-            using (SqlConnection connection = new SqlConnection())
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                return connection.Query<T>(procedureName, parameters, commandType: System.Data.CommandType.StoredProcedure);
+                return connection.Query<T>(procedureName, parameters);
             }
         }
         public int SaveData<T>(string procedureName, T parameters, string connectionString)
         {
-            using (SqlConnection connection = new SqlConnection())
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 return connection.Execute(procedureName, parameters, commandType: System.Data.CommandType.StoredProcedure);
             }
