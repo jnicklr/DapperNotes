@@ -29,13 +29,13 @@ namespace DapperNotes.Repositories
 
         public int Update(Student student, int id)
         {
-            string query = "[spUpdateStudent]";
+            string query = "spUpdateStudent";
             return _dataAccess.SaveData(query, new { Name = student.Name, CPF = student.CPF, BirthDate = student.BirthDate, Id = id }, _connectionString);
         }
 
         public int Delete(int id)
         {
-            string query = "[spDeleteStudent]";
+            string query = "spDeleteStudent";
             return _dataAccess.SaveData(query, new { Id = id }, _connectionString);
         }
 

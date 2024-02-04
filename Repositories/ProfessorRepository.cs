@@ -22,7 +22,7 @@ namespace DapperNotes.Repositories
 
         public int Add(Professor professor)
         {
-            string query = "[spAddProfessor]";
+            string query = "spAddProfessor";
             return _dataAccess.SaveData(query, new
             {
                 Name = professor.Name,
@@ -33,7 +33,7 @@ namespace DapperNotes.Repositories
 
         public int Update(Professor professor, int id)
         {
-            string query = "[spUpdateProfessor]";
+            string query = "spUpdateProfessor";
             return _dataAccess.SaveData(query, new
             {
                 Name = professor.Name,
@@ -45,7 +45,7 @@ namespace DapperNotes.Repositories
 
         public int Delete(int id)
         {
-            string query = "[spDeleteProfessor]";
+            string query = "spDeleteProfessor";
             return _dataAccess.SaveData(query, new { Id = id }, _connectionString);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DapperNotes.DataAccess;
 using DapperNotes.Models;
 using Microsoft.Data.SqlClient;
 using System;
@@ -9,70 +10,55 @@ using System.Threading.Tasks;
 
 namespace DapperNotes.Repositories
 {
-    public class SubjectRepository
+    public class SubjectRepository : IRepository<Subject>
     {
-        private string _connectionString;
+        private readonly string _connectionString;
+        private readonly SqlDataAccess _dataAccess;
         public SubjectRepository(string connectionString)
         {
             _connectionString = connectionString;
+            _dataAccess = new SqlDataAccess();
         }
 
         public int Add(Subject subject)
         {
-            string query = @"INSERT INTO [Subject] VALUES(@Name, @Description, @SubjectTotalHours)";
-            using (SqlConnection connection = new SqlConnection())
+            string query = "spAddSubject";
+            return _dataAccess.SaveData(query, new
             {
-                return connection.Execute(query,
-                    new
-                    {
-                        Name = subject.Name,
-                        Description = subject.Description,
-                        SubjectTotalHours = subject.SubjectTotalHours
-                    });
-            }
+                Name = subject.Name,
+                Description = subject.Description,
+                SubjectTotalHours = subject.SubjectTotalHours
+            }, _connectionString);
         }
 
         public int Update(Subject subject, int id)
         {
-            string query = @"UPDATE [Subject] SET [Name]=@Name, [Description]=@Description, [SubjectTotalHours]=@SubjectTotalHours WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
+            string query = "spUpdateSubject";
+            return _dataAccess.SaveData(query, new
             {
-                return connection.Execute(query,
-                    new
-                    {
-                        Name = subject.Name,
-                        Description = subject.Description,
-                        SubjectTotalHours = subject.SubjectTotalHours,
-                        Id = id
-                    });
-            }
+                Name = subject.Name,
+                Description = subject.Description,
+                SubjectTotalHours = subject.SubjectTotalHours,
+                Id = id
+            }, _connectionString);
         }
 
         public int Delete(int id)
         {
-            string query = @"DELETE FROM [Subject] WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Execute(query, new { Id = id });
-            }
+            string query = "spDeleteSubject";
+            return _dataAccess.SaveData(query, new { Id = id }, _connectionString);
         }
 
         public IEnumerable<Subject> Get()
         {
-            string query = @"SELECT [Id], [Name], [Description], [SubjectTotalHours] FROM [Subject]";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Query<Subject>(query);
-            }
+            string query = "SELECT * FROM [vwGetSubjects]";
+            return _dataAccess.GetData<Subject, dynamic>(query, new { }, _connectionString);
         }
 
         public IEnumerable<Subject> GetById(int id)
         {
-            string query = @"SELECT [Id], [Name], [Description], [SubjectTotalHours] FROM [Subject] WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Query<Subject>(query, new { Id = id });
-            }
+            string query = "SELECT * FROM [vwGetSubjects] WHERE [Id]=@Id";
+            return _dataAccess.GetData<Subject, dynamic>(query, new { Id = id }, _connectionString);
         }
     }
 }

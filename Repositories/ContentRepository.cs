@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DapperNotes.DataAccess;
+using System.Reflection.Metadata;
 
 namespace DapperNotes.Repositories
 {
@@ -22,28 +23,25 @@ namespace DapperNotes.Repositories
 
         public int Add(Content content)
         {
-            string query = "[spAddContent]";
+            string query = "spAddContent";
             return _dataAccess.SaveData(query, new { Semester = content.Semester }, _connectionString);
         }
 
         public int Update(Content content, int id)
         {
-            string query = "[spUpdateContent]";
+            string query = "spUpdateContent";
             return _dataAccess.SaveData(query, new { Semester = content.Semester, Id = id }, _connectionString);
         }
 
         public int Delete(int id)
         {
-            string query = @"DELETE FROM [Content] WHERE [Id]=@Id";
-            using (SqlConnection connection = new SqlConnection())
-            {
-                return connection.Execute(query, new { Id = id });
-            }
+            string query = "spDeleteContent";
+            return _dataAccess.SaveData(query, new { Id = id }, _connectionString);
         }
 
         public IEnumerable<Content> Get()
         {
-            string query = @"SELECT [Id], [Semester] FROM [Content]";
+            string query = "SELECT * FROM [vwGetContents]";
             using (SqlConnection connection = new SqlConnection())
             {
                 return connection.Query<Content>(query);
@@ -52,7 +50,7 @@ namespace DapperNotes.Repositories
 
         public IEnumerable<Content> GetById(int id)
         {
-            string query = @"SELECT [Id], [Semester] FROM [Content] WHERE [Id]=@Id";
+            string query = "SELECT * FROM [vwGetContents] WHERE [Id]=@Id";
             using (SqlConnection connection = new SqlConnection())
             {
                 return connection.Query<Content>(query, new { Id = id });
